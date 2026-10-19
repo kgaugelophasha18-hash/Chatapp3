@@ -8,7 +8,8 @@ package com.mycompany.chatapp;
 
 /**
  *
- * @author Student
+ * Student name: Kgaugelo Phasha
+ * Student number: St10520157
  */
 public class Login {
     
