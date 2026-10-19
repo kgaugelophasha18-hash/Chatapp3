@@ -16,6 +16,10 @@ public class Chatapp {
         System.out.print("First name: ");
         String firstName = input.nextLine();
 
+      System.out.print("First name: ");
+        String number = input.nextLine();
+   
+        
         System.out.print("Last name: ");
         String lastName = input.nextLine();
 
