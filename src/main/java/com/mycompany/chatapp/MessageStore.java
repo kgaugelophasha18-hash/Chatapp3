@@ -13,7 +13,7 @@ import java.util.Scanner;
  */
 
 public class MessageStore { //this is the main class for this file
-   
+    
 
     private ArrayList<Message> sentMessages = new ArrayList<Message>();
     private ArrayList<Message> disregardedMessages = new ArrayList<Message>();

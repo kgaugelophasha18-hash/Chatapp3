@@ -7,7 +7,8 @@ import java.io.IOException;
  *
  * @author Student
  */
-public class Message {
+public class Message { //this is the class
+    
 
     private String messageID;
     private int messageNumber;
