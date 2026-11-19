@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.chatapp;
 
 import java.io.FileWriter;
@@ -11,7 +7,6 @@ import java.io.IOException;
  *
  * @author Student
  */
-
 public class Message {
 
     private String messageID;
@@ -21,36 +16,55 @@ public class Message {
 
     private static int totalMessages = 0;
     private static String sentMessages = "";
-    private static String storedMessages = "";
+
+    private static String jsonFile = "messages.json";
 
     public Message(String messageID, int messageNumber, String recipient, String messageText) {
         this.messageID = messageID;
         this.messageNumber = messageNumber;
         this.recipient = recipient;
         this.messageText = messageText;
-        //These are constructors which will save details of a message
+    }
+
+    public String getMessageID() {
+        return messageID;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public static String getJsonFile() {
+        return jsonFile;
+    }
+
+    public static void setJsonFile(String fileName) {
+        jsonFile = fileName;
     }
 
     public static String generateMessageID() {
         String id = "";
-        for (int i = 0; i < 10; i++) {  // This makes a random ten-digit ID, adding one random digit each time
+        for (int i = 0; i < 10; i++) {
             int digit = (int) (Math.random() * 10);
             id = id + digit;
         }
         return id;
     }
-
+    
     public String displayMessageID() {
-        return "Message ID generated: " + messageID; // This shows that the ID that was created
+        return "Message ID generated: " + messageID;
     }
 
     public boolean checkMessageID() {
-        return messageID.length() <= 10; //this shows that the id must not be more than 
-        //10 characters
+        return messageID.length() <= 10;
     }
 
     public String checkRecipientCell() {
-        if (recipient.matches("\\+27[0-9]{9}")) {  // The number must start with +27 followed by nine digits
+        if (recipient.matches("\\+27[0-9]{9}")) {
             return "Cell phone number successfully captured.";
         } else {
             return "Cell phone number is incorrectly formatted or does not contain "
@@ -59,7 +73,7 @@ public class Message {
     }
 
     public String checkMessageLength() {
-        if (messageText.length() <= 250) { // The message must not be longer than 250 characters
+        if (messageText.length() <= 250) {
             return "Message ready to send.";
         } else {
             int tooMany = messageText.length() - 250;
@@ -71,17 +85,17 @@ public class Message {
     public String createMessageHash() {
         String firstTwo = messageID.substring(0, 2);
 
-        String[] words = messageText.split(" ");   // we cut the message into words
+        String[] words = messageText.split(" "); 
         String firstWord = words[0];
         String lastWord = words[words.length - 1];
 
         String hash = firstTwo + ":" + messageNumber + ":" + firstWord + lastWord;
 
-        return hash.toUpperCase().replaceAll("[^A-Z0-9:]", ""); //Message nees to be all caps, and remove 
-        //punctuation like ? and ,
+        hash = hash.toUpperCase();
+        hash = hash.replace("?", "").replace(",", "").replace("!", "").replace(".", "");
+        return hash;
     }
-
-
+    
     public String messageDetails() {
         return "Message ID: " + messageID + "\n"
              + "Message Hash: " + createMessageHash() + "\n"
@@ -89,7 +103,6 @@ public class Message {
              + "Message: " + messageText;
     }
 
-   
     public String sentMessage(int choice) {
         if (choice == 1) {
             totalMessages = totalMessages + 1;
@@ -105,31 +118,29 @@ public class Message {
         }
     }
 
-    public static String printMessages() { // Returns all the messages sent while the program is running
+    public static String printMessages() {
         return sentMessages;
     }
 
-    public static int returnTotalMessages() {  // Returns how many messages were sent
+    public static int returnTotalMessages() {
         return totalMessages;
     }
 
+    public String toJson() {
+        String text = messageText.replace("\"", "'");  
+
+        return "{\"messageID\": \"" + messageID + "\", "
+             + "\"messageNumber\": \"" + messageNumber + "\", "
+             + "\"messageHash\": \"" + createMessageHash() + "\", "
+             + "\"recipient\": \"" + recipient + "\", "
+             + "\"message\": \"" + text + "\"}";
+    }
+
     public void storeMessage() {
-        String text = messageText.replace("\"", "\\\""); 
-
-        String json = "  {\"messageID\": \"" + messageID + "\", "
-                    + "\"messageHash\": \"" + createMessageHash() + "\", "
-                    + "\"recipient\": \"" + recipient + "\", "
-                    + "\"message\": \"" + text + "\"}";
-
-        if (storedMessages.equals("")) {
-            storedMessages = json;
-        } else {
-            storedMessages = storedMessages + ",\n" + json;
-        }
-
         try {
-            FileWriter writer = new FileWriter("messages.json");
-            writer.write("[\n" + storedMessages + "\n]");
+            
+            FileWriter writer = new FileWriter(jsonFile, true);
+            writer.write(toJson() + "\n");
             writer.close();
         } catch (IOException e) {
             System.out.println("Could not save the file.");
